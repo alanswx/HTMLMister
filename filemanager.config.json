@@ -56,7 +56,7 @@
     },
     "api": {
         "lang": "py",
-        "connectorUrl": "/files/connectors/python/filemanager",
+        "connectorUrl": "/api/richfilemanager",
         "requestParams": {
             "GET": {},
             "POST": {},
@@ -160,6 +160,7 @@
             "extensions": [
                 "txt",
                 "csv",
+                "sh",
                 "ini"
             ]
         },
@@ -182,6 +183,7 @@
             "txt",
             "csv",
             "ini",
+            "sh",
             "md"
         ]
     },
