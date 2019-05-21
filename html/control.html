@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="expires" content="0">
+		<title>MiSTer Web Control</title>
+		<script language="JavaScript"><!--
+			const refreshRate=1000;
+			
+			function refreshScreenshot() {
+			   if (!document.images) return;
+			   document.images['Screenshot'].src = '/api/screenshot?rand=' + Math.random();
+			   setTimeout('refreshScreenshot()',refreshRate); // refresh every 1 secs
+			}
+			
+			function Request(eventname)
+			{
+				var xmlHttp = null;
+				var dateObject = new Date();
+				
+				try
+				{
+					// Firefox, Opera 8.0+, Safari, IE7
+					xmlHttp = new XMLHttpRequest();
+				}
+				catch (e)
+				{
+					
+					try
+					{
+						// IE 6
+						xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+					}
+					catch (e)
+					{
+						// IE 5
+						xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+				}
+				
+				xmlHttp.open('GET', "/api/" + eventname); //+ "&_id" + dateObject.getTime(), true);
+				xmlHttp.send(null);
+				return false;
+			}
+			
+			function TriggerEvent(eventname)
+			{
+				Request(eventname); //+ "&withoutRelease");
+				return false;
+			}
+			
+			function KeyDownHandler(event) 
+			{
+				TriggerEvent("keypress?key=" + event.which);
+				return false;
+			}
+			
+			function StartUp()
+			{
+				//document.okeypress = KeyPressHandler;
+				document.onkeydown = KeyDownHandler;
+				//document.onkeyup = KeyUpHandler;
+				
+				
+				// It is important to assign a mouse-up event handler to the document body. 
+				// Assigning it to the element (eg. button) wouldn't get triggered if the pressed 
+				// mouse moves outside the elements area.
+				//document.onmouseup = MouseUpHandler;
+				
+				setTimeout('refreshScreenshot()',refreshRate)
+			}
+		//--></script>
+	<style>
+	</style>
+	</head>
+	<body onLoad="StartUp()">
+		<h1>MiSTer Web Control</h1>
+		<p><img id="Screenshot" src="/api/screenshot" width="640" height="480"></p>
+		<p>If you see a "technical difficulties" test pattern image,<br/>the core scaler is incompatible with the screenshot functionality.</p>
+		<p>Please type on your keyboard and keystrokes will be sent to your MiSTer system.</p>
+		
+		<p>For online documentation and support please refer to:<br/>
+		<a href="https://github.com/MiSTer-devel/Main_MiSTer/wiki">MiSTer wiki</a><br/>
+		<a href="http://www.atari-forum.com/viewforum.php?f=117">www.atari-forum.com</a><br/>
+		<a href="https://www.facebook.com/groups/1870135613286506">MiSTer FPGA Computer Facebook group</a><br/>
+		<a href="https://discord.gg/EX57xnF">Classic Gaming Discord server</a><br/></p>
+
+		<p><em>Thank you for using MiSTer.</em></p>
+	</body>
+</html>
+
