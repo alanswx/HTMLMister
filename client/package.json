@@ -4,7 +4,8 @@
   "private": true,
   "homepage": "http://mister/react",
   "dependencies": {
-    "query-string": "^6.5.0",
+    "mime": ">=1.4.1",
+    "query-string": "^5.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
