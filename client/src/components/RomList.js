@@ -16,7 +16,7 @@ class RomList extends Component {
 
   loadDirectoryListing = (dir, rom) => {
     console.log(SERVER_URL);
-    var url;
+    let url;
     if (dir)
       url =
         SERVER_URL + "/api/filesearch?ext=" + rom + "&name=/media/fat/" + dir;
@@ -55,8 +55,9 @@ class RomList extends Component {
     }
     const coreList = manifest
       ? Object.keys(manifest["files"]).map((val, index, arr) => {
-          var name = manifest["files"][val]["name"];
-          var type = manifest["files"][val]["type"];
+          const name = manifest["files"][val]["name"];
+          const type = manifest["files"][val]["type"];
+
           if (type === "dir") {
             return (
               <Table.Row>
@@ -67,7 +68,7 @@ class RomList extends Component {
               </Table.Row>
             );
           } else {
-            var load_url;
+            let load_url;
             if (this.props.dir)
               load_url =
                 SERVER_URL +

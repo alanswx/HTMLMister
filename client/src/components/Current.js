@@ -15,8 +15,7 @@ class Current extends Component {
   }
 
   loadCurrentInfo = () => {
-    var url;
-    url = SERVER_URL + "/api/getconfig";
+    const url = SERVER_URL + "/api/getconfig";
 
     window
       .fetch(url)
@@ -39,12 +38,14 @@ class Current extends Component {
     if (config) {
       console.log(config);
     }
-    var Code = "";
+    let Code = "";
 
     const configList = config
       ? Object.keys(config).map((val, index, arr) => {
-          var config_line = config[index][index];
-          var cell = <Table.Cell>{config_line}</Table.Cell>;
+          const config_line = config[index][index];
+          let cell = <Table.Cell>{config_line}</Table.Cell>;
+          let parts;
+
           if (index === 0) {
             Code = config_line;
             cell = (
@@ -60,9 +61,9 @@ class Current extends Component {
                 cell = <Table.Cell />;
                 break;
               case "F":
-                var parts = config_line.split(",");
-                //var url = SERVER_URL+'/api/filesearch?ext='+parts[1]+'&name=/media/fat/'+Code;
-                var url = "/roms/" + Code + "/?rom=" + parts[1];
+                parts = config_line.split(",");
+                //let url = SERVER_URL+'/api/filesearch?ext='+parts[1]+'&name=/media/fat/'+Code;
+                let url = "/roms/" + Code + "/?rom=" + parts[1];
                 return (
                   <Table.Row>
                     <Table.Cell>{"File Load"}</Table.Cell>
@@ -75,11 +76,11 @@ class Current extends Component {
                 );
                 break;
               case "O":
-                var parts = config_line.split(",");
-                var dropdown = parts.slice(2).map(value => {
+                parts = config_line.split(",");
+                let dropdown = parts.slice(2).map(value => {
                   return { key: value, text: value, value: value };
                 });
-                var drop_title = parts[1];
+                let drop_title = parts[1];
                 return (
                   <Table.Row>
                     <Table.Cell>{"Option: " + drop_title}</Table.Cell>

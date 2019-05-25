@@ -13,7 +13,7 @@ class CoreList extends Component {
 
   loadDirectoryListing = dir => {
     console.log(SERVER_URL);
-    var url;
+    let url;
     if (dir)
       url = SERVER_URL + "/api/filesearch?ext=rbf&name=/media/fat/" + dir;
     else url = SERVER_URL + "/api/filesearch?ext=rbf&name=/media/fat/";
@@ -46,8 +46,8 @@ class CoreList extends Component {
     }
     const coreList = manifest
       ? Object.keys(manifest["files"]).map((val, index, arr) => {
-          var name = manifest["files"][val]["name"];
-          var type = manifest["files"][val]["type"];
+          const name = manifest["files"][val]["name"];
+          const type = manifest["files"][val]["type"];
           if (type === "dir") {
             return (
               <Table.Row>
@@ -58,7 +58,7 @@ class CoreList extends Component {
               </Table.Row>
             );
           } else {
-            var load_url;
+            let load_url;
             if (this.props.dir)
               load_url =
                 SERVER_URL +
