@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import { Table } from "semantic-ui-react";
-import { Menu } from "semantic-ui-react";
-import { Button } from "semantic-ui-react";
-import { Dropdown } from "semantic-ui-react";
+import { Table, Menu, Button, Dropdown } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { SERVER_URL } from "../config.js";
 
