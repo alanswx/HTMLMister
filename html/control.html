@@ -5,12 +5,31 @@
 		<meta http-equiv="expires" content="0">
 		<title>MiSTer Web Control</title>
 		<script language="JavaScript"><!--
-			const refreshRate=1000;
+var fps;
+var lastCalledTime;
+
+function requestAnimFrame() {
+
+  if(!lastCalledTime) {
+     lastCalledTime = Date.now();
+     fps = 0;
+     return;
+  }
+  delta = (Date.now() - lastCalledTime)/1000;
+  lastCalledTime = Date.now();
+  fps = 1/delta;
+  var fpselem=document.getElementById('fps');
+	fpselem.value=fps;
+}
+			const refreshRate=500;
 			
 			function refreshScreenshot() {
 			   if (!document.images) return;
 			   document.images['Screenshot'].src = '/api/screenshot?rand=' + Math.random();
-			   setTimeout('refreshScreenshot()',refreshRate); // refresh every 1 secs
+				document.images['Screenshot'].onload = function() { requestAnimFrame();  console.log('loaded');  document.images['Screenshot'].src = '/api/screenshot?rand=' + Math.random();}
+
+
+			   //setTimeout('refreshScreenshot()',refreshRate); // refresh every 1 secs
 			}
 			
 			function Request(eventname)
@@ -74,6 +93,7 @@
 	</style>
 	</head>
 	<body onLoad="StartUp()">
+		<div>FPS:<input type=text id='fps'/></div>
 		<h1>MiSTer Web Control</h1>
 		<p><img id="Screenshot" src="/api/screenshot" width="640" height="480"></p>
 		<p>If you see a "technical difficulties" test pattern image,<br/>the core scaler is incompatible with the screenshot functionality.</p>
@@ -88,4 +108,7 @@
 		<p><em>Thank you for using MiSTer.</em></p>
 	</body>
 </html>
+
+
+
 

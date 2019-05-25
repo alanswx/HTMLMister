@@ -1,0 +1,139 @@
+<script>
+
+var lastCalledTime;
+var fps;
+
+var lastKey;
+			
+function KeyDownHandler(event) {
+	//TriggerEvent("keypress?key=" + event.which);
+	lastKey=event.which;
+	console.log(event.which);
+	return false;
+}
+			
+
+function requestAnimFrame() {
+
+  if(!lastCalledTime) {
+     lastCalledTime = Date.now();
+     fps = 0;
+     return;
+  }
+  delta = (Date.now() - lastCalledTime)/1000;
+  lastCalledTime = Date.now();
+  fps = 1/delta;
+  var fpselem=document.getElementById('fps');
+	fpselem.value=fps;
+}
+
+
+
+function drawBinary(binaryImage){
+
+	requestAnimFrame();
+
+var bytes = new Uint8Array(binaryImage);
+
+var u32bytes = bytes.buffer.slice(0,4); // last four bytes as a new `ArrayBuffer`
+var uint = new Uint32Array(u32bytes)[0];
+var pic_width=uint;
+u32bytes = bytes.buffer.slice(4,8); // last four bytes as a new `ArrayBuffer`
+uint = new Uint32Array(u32bytes)[0];
+var pic_height=uint;
+
+if (pic_height<4) return;
+if (pic_width<4) return;
+
+var output = new Uint8ClampedArray(pic_width*pic_height*4);
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+var image = context.createImageData(pic_width,pic_height);
+
+	var inpos=8;
+	var outpos=0;
+	  for (var y =0; y < pic_height;y++) 
+	for (var x =0; x < pic_width;x++) {
+		{
+		image.data[outpos++]=bytes[inpos++];
+		image.data[outpos++]=bytes[inpos++];
+		image.data[outpos++]=bytes[inpos++];
+		image.data[outpos++]=255;
+		}
+        }
+	/*
+for (var i=0; i<bytes.length; i++) {
+    image.data[i] = bytes[i];
+}*/
+context.putImageData(image,0,0);
+//context.drawImage(image, 0, 0);
+/*
+
+	var output = new Uint8ClampedArray(pic_width*pic_height*4);
+	var inpos=0;
+	var outpos=0;
+		  console.log(binaryImage);
+	for (var x =0; x < pic_width;x++) {
+	  for (var y =0; y < pic_height;y++) 
+		{
+		output[outpos++]=binaryImage[inpos++];
+		output[outpos++]=binaryImage[inpos++];
+		output[outpos++]=binaryImage[inpos++];
+		output[outpos++]=128;
+		}
+        }
+	var binaryImageData = new ImageData(output,pic_width,pic_height);
+	context.putImageData(binaryImageData,0,0);
+	*/
+}
+</script>
+<html><body><h1>Easy echo</h1><pre id="chat"></pre> 
+<script>
+init = function(){
+	lastKey=0;
+msg=document.getElementById('msg');
+msg.focus();
+ws=new WebSocket('ws://'+window.location.host);
+ws.binaryType = "arraybuffer";
+document.onkeydown = KeyDownHandler;
+
+ws.onmessage=function(ev){
+drawBinary(ev.data);
+if (lastKey) {
+	ws.send('key:'+lastKey);
+	lastKey=0;
+}
+else
+	ws.send('ping');
+};
+
+ws.onopen = function () {
+  ws.send('ping'); // Send the message 'Ping' to the server
+};
+
+// Log errors
+ws.onerror = function (error) {
+  console.log('WebSocket Error ' + error);
+};
+ws.onclose= function () {
+  console.log('WebSocket close' );
+};
+
+window.onbeforeunload = function() {
+    //ws.onclose = function () {}; // disable onclose handler first
+    ws.close();
+};
+
+
+
+
+}
+window.addEventListener('load', init, false);
+</script><img id="img" src=""><input type="text" id="msg" onchange="javascript:ws.send(msg.value); msg.select(); msg.focus();"/><br/>
+<input type=text id='fps'/>
+<button onclick='ws.close(1000);'>Close connection</button>
+	
+<canvas id='canvas' width="640" height="480" />	
+	
+	</body></html>
+
