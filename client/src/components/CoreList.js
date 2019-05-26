@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { SERVER_URL } from "../config.js";
+
+const SERVER_URL = `http://${process.env.REACT_APP_MISTER_HOST}`;
 
 class CoreList extends Component {
   constructor(props) {
