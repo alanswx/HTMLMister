@@ -3,8 +3,7 @@ import { Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
 import { withRouter } from "react-router";
-
-const SERVER_URL = `http://${process.env.REACT_APP_MISTER_HOST}`;
+import axios from "axios";
 
 class RomList extends Component {
   constructor(props) {
@@ -16,22 +15,16 @@ class RomList extends Component {
   }
 
   loadDirectoryListing = (dir, rom) => {
-    console.log(SERVER_URL);
-    let url;
-    if (dir)
-      url =
-        SERVER_URL + "/api/filesearch?ext=" + rom + "&name=/media/fat/" + dir;
-    else url = SERVER_URL + "/api/filesearch?ext=" + rom + "&name=/media/fat/";
-    window
-      .fetch(url)
-      .then(response => response.text())
-      .then(manifest => {
-        const json = JSON.parse(manifest);
-        console.log(json);
-        this.setState({
-          manifest: json
-        });
+    const url = dir
+      ? `/api/filesearch?ext=${rom}&name=/media/fat/${dir}`
+      : `/api/filesearch?ext=${rom}&name=/media/fat/`;
+
+    axios(url).then(({ data }) => {
+      console.log(data);
+      this.setState({
+        manifest: data
       });
+    });
   };
 
   componentWillReceiveProps(newProps) {
@@ -50,10 +43,12 @@ class RomList extends Component {
   render() {
     const { manifest } = this.state;
     console.log(this.props);
+
     if (manifest) {
       console.log(manifest);
       console.log(manifest["files"]);
     }
+
     const coreList = manifest
       ? Object.keys(manifest["files"]).map((val, index, arr) => {
           const name = manifest["files"][val]["name"];
@@ -71,13 +66,8 @@ class RomList extends Component {
           } else {
             let load_url;
             if (this.props.dir)
-              load_url =
-                SERVER_URL +
-                "/api/loadfile?name=" +
-                this.props.dir +
-                "/" +
-                name;
-            else load_url = SERVER_URL + "/api/loadfile?name=" + name;
+              load_url = "/api/loadfile?name=" + this.props.dir + "/" + name;
+            else load_url = "/api/loadfile?name=" + name;
 
             return (
               <Table.Row>

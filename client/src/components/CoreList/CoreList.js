@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-
-const SERVER_URL = `http://${process.env.REACT_APP_MISTER_HOST}`;
+import axios from "axios";
 
 class CoreList extends Component {
   constructor(props) {
@@ -13,21 +12,16 @@ class CoreList extends Component {
   }
 
   loadDirectoryListing = dir => {
-    console.log(SERVER_URL);
-    let url;
-    if (dir)
-      url = SERVER_URL + "/api/filesearch?ext=rbf&name=/media/fat/" + dir;
-    else url = SERVER_URL + "/api/filesearch?ext=rbf&name=/media/fat/";
-    window
-      .fetch(url)
-      .then(response => response.text())
-      .then(manifest => {
-        const json = JSON.parse(manifest);
-        console.log(json);
-        this.setState({
-          manifest: json
-        });
+    const url = dir
+      ? `/api/filesearch?ext=rbf&name=/media/fat/${dir}`
+      : "/api/filesearch?ext=rbf&name=/media/fat/";
+
+    axios(url).then(({ data }) => {
+      console.log(data);
+      this.setState({
+        manifest: data
       });
+    });
   };
 
   componentWillReceiveProps(newProps) {
@@ -41,12 +35,14 @@ class CoreList extends Component {
   render() {
     const { manifest } = this.state;
     console.log(this.props);
+
     if (manifest) {
       console.log(manifest);
       console.log(manifest["files"]);
     }
+
     const coreList = manifest
-      ? Object.keys(manifest["files"]).map((val, index, arr) => {
+      ? Object.keys(manifest["files"]).map(val => {
           const name = manifest["files"][val]["name"];
           const type = manifest["files"][val]["type"];
           if (type === "dir") {
@@ -59,15 +55,9 @@ class CoreList extends Component {
               </Table.Row>
             );
           } else {
-            let load_url;
-            if (this.props.dir)
-              load_url =
-                SERVER_URL +
-                "/api/loadcore?name=" +
-                this.props.dir +
-                "/" +
-                name;
-            else load_url = SERVER_URL + "/api/loadcore?name=" + name;
+            const load_url = this.props.dir
+              ? `/api/loadcore?name=${this.props.dir}/${name}`
+              : `/api/loadcore?name=${name}`;
 
             return (
               <Table.Row>
@@ -84,6 +74,7 @@ class CoreList extends Component {
     return (
       <div>
         <h1>Core List</h1>
+
         <Table celled>
           <Table.Header>
             <Table.Row>
