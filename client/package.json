@@ -3,6 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "http://mister/react",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-fix && CI=true npm test"
+    }
+  },
   "dependencies": {
     "webpack-dev-server": ">=3.1.11",
     "mime": ">=1.4.1",
@@ -14,11 +27,12 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^2.3.0",
+    "prettier": "^1.17.1"
   }
 }
