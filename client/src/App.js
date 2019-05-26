@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
-import CoreList from "./components/CoreList.js";
-import Current from "./components/Current.js";
-import RomList from "./components/RomList.js";
+import CoreList from "./components/CoreList";
+import Current from "./components/Current";
+import RomList from "./components/RomList";
 
 import "./App.css";
 
