@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "webpack-dev-server": ">=3.1.11",
+    "axios": "^0.18.0",
     "mime": ">=1.4.1",
     "query-string": "^5.1.1",
     "react": "^16.8.6",
@@ -25,7 +25,8 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "0.9.5",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.1"
+    "semantic-ui-react": "^0.87.1",
+    "webpack-dev-server": ">=3.1.11"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

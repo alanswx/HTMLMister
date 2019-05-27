@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Table, Menu, Button, Dropdown } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-
-const SERVER_URL = `http://${process.env.REACT_APP_MISTER_HOST}`;
+import axios from "axios";
 
 class Current extends Component {
   constructor(props) {
@@ -13,19 +12,15 @@ class Current extends Component {
   }
 
   loadCurrentInfo = () => {
-    const url = SERVER_URL + "/api/getconfig";
+    const url = "/api/getconfig";
 
-    window
-      .fetch(url)
-      .then(response => response.text())
-      .then(config => {
-        const json = JSON.parse(config);
-        console.log(json);
-        // should we clean up the config here?
-        this.setState({
-          config: json
-        });
+    axios(url).then(({ data }) => {
+      console.log(data);
+      // should we clean up the config here?
+      this.setState({
+        config: data
       });
+    });
   };
 
   componentWillMount() {
@@ -33,13 +28,15 @@ class Current extends Component {
   }
   render() {
     const { config } = this.state;
+
     if (config) {
       console.log(config);
     }
+
     let Code = "";
 
     const configList = config
-      ? Object.keys(config).map((val, index, arr) => {
+      ? Object.keys(config).map((val, index) => {
           const config_line = config[index][index];
           let cell = <Table.Cell>{config_line}</Table.Cell>;
           let parts;
@@ -65,6 +62,7 @@ class Current extends Component {
                 return (
                   <Table.Row>
                     <Table.Cell>{"File Load"}</Table.Cell>
+
                     <Table.Cell>
                       <Button as={Link} name="Rom List" to={url}>
                         {parts[1]}
@@ -119,6 +117,7 @@ class Current extends Component {
             Core List
           </Menu.Item>
         </Menu>
+
         <Table celled>
           <Table.Header>
             <Table.Row>
@@ -126,6 +125,7 @@ class Current extends Component {
               <Table.HeaderCell> Action </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
+
           <Table.Body>{configList}</Table.Body>
         </Table>
       </div>

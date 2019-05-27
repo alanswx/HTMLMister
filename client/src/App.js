@@ -2,15 +2,18 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
+import axios from "axios";
 
-import CoreList from "./components/CoreList";
-import Current from "./components/Current";
-import RomList from "./components/RomList";
+import CoreList from "./components/CoreList/CoreList";
+import Current from "./components/Current/Current";
+import RomList from "./components/RomList/RomList";
 import "./App.css";
+
+axios.defaults.baseURL = `http://${process.env.REACT_APP_MISTER_HOST}`;
 
 const App = () => (
   <div className="App">
-    <BrowserRouter>
+    <BrowserRouter basename="/react">
       <Route
         exact
         path="/cores/:dir*"
