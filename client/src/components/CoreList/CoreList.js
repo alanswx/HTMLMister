@@ -1,14 +1,21 @@
 import React, { Component } from "react";
-import { Table } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Card, Table } from "semantic-ui-react";
 import axios from "axios";
+
+import "./CoreLink.css";
+import FileCard from "./FileCard";
+import DirectoryRow from "./DirectoryRow";
+
+// Hide dotfiles in case any Mac users haven't removed them
+const removeDotFiles = ([fileKey]) => !fileKey.startsWith(".");
+
+const filterDirectories = ([fileKey, file]) => file.type === "dir";
+const filterNonDirectories = ([fileKey, file]) => file.type !== "dir";
 
 class CoreList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      manifest: null
-    };
+    this.state = {};
   }
 
   loadDirectoryListing = dir => {
@@ -17,7 +24,6 @@ class CoreList extends Component {
       : "/api/filesearch?ext=rbf&name=/media/fat/";
 
     axios(url).then(({ data }) => {
-      console.log(data);
       this.setState({
         manifest: data
       });
@@ -33,57 +39,39 @@ class CoreList extends Component {
     this.loadDirectoryListing(this.props.dir);
   }
   render() {
-    const { manifest } = this.state;
-    console.log(this.props);
+    const { manifest = {} } = this.state;
+    const { files = {} } = manifest;
 
-    if (manifest) {
-      console.log(manifest);
-      console.log(manifest["files"]);
-    }
-
-    const coreList = manifest
-      ? Object.keys(manifest["files"]).map(val => {
-          const name = manifest["files"][val]["name"];
-          const type = manifest["files"][val]["type"];
-          if (type === "dir") {
-            return (
-              <Table.Row>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>
-                  <Link to={name}>Dir</Link>
-                </Table.Cell>
-              </Table.Row>
-            );
-          } else {
-            const load_url = this.props.dir
-              ? `/api/loadcore?name=${this.props.dir}/${name}`
-              : `/api/loadcore?name=${name}`;
-
-            return (
-              <Table.Row>
-                <Table.Cell>{name}</Table.Cell>
-                <Table.Cell>
-                  <a href={load_url}>Launch Core</a>
-                </Table.Cell>
-              </Table.Row>
-            );
-          }
-        })
-      : null;
+    const filesEntries = Object.entries(files).filter(removeDotFiles);
+    const filesDirectories = filesEntries.filter(filterDirectories);
+    const filesNonDirectories = filesEntries.filter(filterNonDirectories);
 
     return (
       <div>
         <h1>Core List</h1>
 
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell> Title </Table.HeaderCell>
-              <Table.HeaderCell> Action </Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>{coreList}</Table.Body>
-        </Table>
+        {!!filesDirectories.length && (
+          <Table celled style={{ marginBottom: "30px" }}>
+            <Table.Body>
+              {filesDirectories.map(([fileKey, file]) => (
+                <DirectoryRow name={file.name} key={fileKey} />
+              ))}
+            </Table.Body>
+          </Table>
+        )}
+
+        {!!filesNonDirectories.length && (
+          <Card.Group>
+            {filesNonDirectories.map(([fileKey, file]) => {
+              const { name } = file;
+              const load_url = this.props.dir
+                ? `/api/loadcore?name=${this.props.dir}/${name}`
+                : `/api/loadcore?name=${name}`;
+
+              return <FileCard name={name} href={load_url} key={fileKey} />;
+            })}
+          </Card.Group>
+        )}
       </div>
     );
   }

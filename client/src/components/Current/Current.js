@@ -62,6 +62,7 @@ class Current extends Component {
                 return (
                   <Table.Row>
                     <Table.Cell>{"File Load"}</Table.Cell>
+
                     <Table.Cell>
                       <Button as={Link} name="Rom List" to={url}>
                         {parts[1]}
@@ -116,6 +117,7 @@ class Current extends Component {
             Core List
           </Menu.Item>
         </Menu>
+
         <Table celled>
           <Table.Header>
             <Table.Row>
@@ -123,6 +125,7 @@ class Current extends Component {
               <Table.HeaderCell> Action </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
+
           <Table.Body>{configList}</Table.Body>
         </Table>
       </div>
